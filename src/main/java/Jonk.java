@@ -3,7 +3,7 @@ import java.util.Scanner;
 public class Jonk {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        String[] listOfItems = new String[100];
+        Task[] listOfItems = new Task[100];
         int nextEmptyIndex = 0;
 
         String line = "____________________________________________________________";
@@ -26,14 +26,34 @@ public class Jonk {
             System.out.println("\t" + line);
 
             if (input.equals("list")) {
+                System.out.println("Here are the tasks in your list:");
                 for (int i = 0; i < nextEmptyIndex; i++) {
                     System.out.println("\t" + (i + 1) + ". " + listOfItems[i]);
                 }
             } else {
-                listOfItems[nextEmptyIndex] = input;
-                nextEmptyIndex++;
+                String[] parts = input.trim().split("\\s+");
 
-                System.out.println("\tadded: " + input);
+                if (parts[0].equals("mark") || parts[0].equals("unmark")) {
+                    //command
+                    int taskNumber = Integer.parseInt(parts[1]);
+                    int taskIndex = taskNumber - 1;
+
+                    if (parts[0].equals("mark")) {
+                        listOfItems[taskIndex].markAsDone();
+                        System.out.println("Nice! I've marked this task as done:");
+                        System.out.println("\t" + listOfItems[taskIndex]);
+                    } else {
+                        listOfItems[taskIndex].markAsUndone();
+                        System.out.println("OK, I've marked this task as not done yet:");
+                        System.out.println("\t" + listOfItems[taskIndex]);
+                    }
+                } else {
+                    // task
+                    listOfItems[nextEmptyIndex] = new Task(input);
+                    nextEmptyIndex++;
+
+                    System.out.println("\tadded: " + input);
+                }
             }
 
             System.out.println("\t" + line);
