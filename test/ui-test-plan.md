@@ -357,7 +357,107 @@ OK, I've marked this task as not done yet:
     [E][ ] project meeting (from: 2pm to: 3pm)
 ```
 
-## UI-22: Exit the program
+## UI-22: Delete a task
+
+**Aim:** Verify that a valid task number deletes the corresponding task and updates the task count.
+
+**Inputs:**
+
+```text
+delete 2
+```
+
+**Expected output:**
+
+```text
+Noted. I've removed this task:
+    [D][ ] return book (by: Sunday)
+Now you have 2 tasks in the list.
+```
+
+## UI-23: List tasks after deletion
+
+**Aim:** Verify that the deleted task is absent and later tasks are renumbered.
+
+**Inputs:**
+
+```text
+list
+```
+
+**Expected output:**
+
+```text
+Here are the tasks in your list:
+    1.[T][ ] read book
+    2.[E][ ] project meeting (from: 2pm to: 3pm)
+```
+
+## UI-24: Reject delete without a task number
+
+**Aim:** Verify that `delete` requires a task number and does not terminate the chatbot when it is missing.
+
+**Inputs:**
+
+```text
+delete
+```
+
+**Expected output:**
+
+```text
+Please provide exactly one task number.
+```
+
+## UI-25: Reject a non-numeric delete task number
+
+**Aim:** Verify that `delete` rejects a task number that is not a whole number.
+
+**Inputs:**
+
+```text
+delete abc
+```
+
+**Expected output:**
+
+```text
+The task number must be a whole number.
+```
+
+## UI-26: Reject delete task number zero
+
+**Aim:** Verify that `delete` rejects zero because task numbers start from one.
+
+**Inputs:**
+
+```text
+delete 0
+```
+
+**Expected output:**
+
+```text
+That task number does not exist.
+```
+
+## UI-27: Reject delete beyond the list size
+
+**Aim:** Verify that `delete` rejects task number three when the list contains only two tasks.
+
+**Inputs:**
+
+```text
+delete 3
+```
+
+**Expected output:**
+
+```text
+That task number does not exist.
+```
+
+## UI-28: Exit the program
 
 **Aim:** Verify that the program exits with its farewell message.
 
