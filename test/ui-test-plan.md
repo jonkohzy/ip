@@ -6,7 +6,105 @@
 - Compile and run with the Java version required by `AGENTS.md`.
 - A line whose trimmed content is only Jonk's underscores frames each command response. Record it in the session transcript, but exclude it from the expected-output comparison.
 - Before comparison, convert CRLF line endings to LF and expand each tab to four spaces in both actual and expected output. Do not otherwise trim or ignore whitespace or output lines.
+- Before starting the session, replace `./data/jonk.txt` with the exact startup fixture below. After each case that specifies expected data-file contents, read the file and compare it exactly after converting CRLF line endings to LF.
 - Stop the session immediately after the first failure.
+
+**Startup data-file fixture:**
+
+```text
+T | 1 | write \| report
+D | 0 | return notes | Monday \\ room
+
+E | 1 | project demo | 10am | 11am
+```
+
+## UI-LOAD-01: List loaded tasks
+
+**Aim:** Verify that startup loading recreates all task types and completion states, ignores blank lines, and decodes escaped pipe and backslash characters.
+
+**Inputs:**
+
+```text
+list
+```
+
+**Expected output:**
+
+```text
+Here are the tasks in your list:
+    1.[T][X] write | report
+    2.[D][ ] return notes (by: Monday \ room)
+    3.[E][X] project demo (from: 10am to: 11am)
+```
+
+## UI-LOAD-02: Delete the loaded event
+
+**Aim:** Verify that the loaded event behaves like a normal task and remove it before the existing add-task cases.
+
+**Inputs:**
+
+```text
+delete 3
+```
+
+**Expected output:**
+
+```text
+Noted. I've removed this task:
+    [E][X] project demo (from: 10am to: 11am)
+Now you have 2 tasks in the list.
+```
+
+**Expected data file after command:**
+
+```text
+T | 1 | write \| report
+D | 0 | return notes | Monday \\ room
+```
+
+## UI-LOAD-03: Delete the loaded deadline
+
+**Aim:** Verify that the loaded deadline behaves like a normal task and remove it before the existing add-task cases.
+
+**Inputs:**
+
+```text
+delete 2
+```
+
+**Expected output:**
+
+```text
+Noted. I've removed this task:
+    [D][ ] return notes (by: Monday \ room)
+Now you have 1 tasks in the list.
+```
+
+**Expected data file after command:**
+
+```text
+T | 1 | write \| report
+```
+
+## UI-LOAD-04: Delete the loaded todo
+
+**Aim:** Verify that the loaded todo behaves like a normal task and leave an empty list for the existing cases.
+
+**Inputs:**
+
+```text
+delete 1
+```
+
+**Expected output:**
+
+```text
+Noted. I've removed this task:
+    [T][X] write | report
+Now you have 0 tasks in the list.
+```
+
+**Expected data file after command:** The file is empty (zero bytes).
 
 ## UI-01: Add a todo
 
@@ -24,6 +122,12 @@ todo read book
 Got it. I've added this task:
     [T][ ] read book
 Now you have 1 tasks in the list.
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
 ```
 
 ## UI-02: Add a deadline
@@ -44,6 +148,13 @@ Got it. I've added this task:
 Now you have 2 tasks in the list.
 ```
 
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+D | 0 | return book | Sunday
+```
+
 ## UI-03: Add an event
 
 **Aim:** Verify that an event with non-empty `/from` and `/to` values is added.
@@ -60,6 +171,14 @@ event project meeting /from 2pm /to 3pm
 Got it. I've added this task:
     [E][ ] project meeting (from: 2pm to: 3pm)
 Now you have 3 tasks in the list.
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+D | 0 | return book | Sunday
+E | 0 | project meeting | 2pm | 3pm
 ```
 
 ## UI-04: Reject an empty todo description
@@ -146,6 +265,14 @@ Nice! I've marked this task as done:
     [T][X] read book
 ```
 
+**Expected data file after command:**
+
+```text
+T | 1 | read book
+D | 0 | return book | Sunday
+E | 0 | project meeting | 2pm | 3pm
+```
+
 ## UI-09: Unmark a task
 
 **Aim:** Verify that the first task can be marked as not done again.
@@ -161,6 +288,14 @@ unmark 1
 ```text
 OK, I've marked this task as not done yet:
     [T][ ] read book
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+D | 0 | return book | Sunday
+E | 0 | project meeting | 2pm | 3pm
 ```
 
 ## UI-10: Reject an unknown command
@@ -340,6 +475,14 @@ Nice! I've marked this task as done:
     [E][X] project meeting (from: 2pm to: 3pm)
 ```
 
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+D | 0 | return book | Sunday
+E | 1 | project meeting | 2pm | 3pm
+```
+
 ## UI-21: Unmark the last task
 
 **Aim:** Verify that the highest valid task number can be marked as not done again.
@@ -355,6 +498,14 @@ unmark 3
 ```text
 OK, I've marked this task as not done yet:
     [E][ ] project meeting (from: 2pm to: 3pm)
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+D | 0 | return book | Sunday
+E | 0 | project meeting | 2pm | 3pm
 ```
 
 ## UI-22: Delete a task
@@ -373,6 +524,13 @@ delete 2
 Noted. I've removed this task:
     [D][ ] return book (by: Sunday)
 Now you have 2 tasks in the list.
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+E | 0 | project meeting | 2pm | 3pm
 ```
 
 ## UI-23: List tasks after deletion
