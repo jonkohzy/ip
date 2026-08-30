@@ -13,9 +13,9 @@
 
 ```text
 T | 1 | write \| report
-D | 0 | return notes | Monday \\ room
+D | 0 | return notes \\ room | 2019-10-15
 
-E | 1 | project demo | 10am | 11am
+E | 1 | project demo | 2019-10-16 | 2019-10-17
 ```
 
 ## UI-LOAD-01: List loaded tasks
@@ -33,8 +33,8 @@ list
 ```text
 Here are the tasks in your list:
     1.[T][X] write | report
-    2.[D][ ] return notes (by: Monday \ room)
-    3.[E][X] project demo (from: 10am to: 11am)
+    2.[D][ ] return notes \ room (by: Oct 15 2019)
+    3.[E][X] project demo (from: Oct 16 2019 to: Oct 17 2019)
 ```
 
 ## UI-LOAD-02: Delete the loaded event
@@ -51,7 +51,7 @@ delete 3
 
 ```text
 Noted. I've removed this task:
-    [E][X] project demo (from: 10am to: 11am)
+    [E][X] project demo (from: Oct 16 2019 to: Oct 17 2019)
 Now you have 2 tasks in the list.
 ```
 
@@ -59,7 +59,7 @@ Now you have 2 tasks in the list.
 
 ```text
 T | 1 | write \| report
-D | 0 | return notes | Monday \\ room
+D | 0 | return notes \\ room | 2019-10-15
 ```
 
 ## UI-LOAD-03: Delete the loaded deadline
@@ -76,7 +76,7 @@ delete 2
 
 ```text
 Noted. I've removed this task:
-    [D][ ] return notes (by: Monday \ room)
+    [D][ ] return notes \ room (by: Oct 15 2019)
 Now you have 1 tasks in the list.
 ```
 
@@ -132,19 +132,19 @@ T | 0 | read book
 
 ## UI-02: Add a deadline
 
-**Aim:** Verify that a deadline with a non-empty `/by` value is added.
+**Aim:** Verify that a deadline accepts an ISO date and displays it in a human-readable format.
 
 **Inputs:**
 
 ```text
-deadline return book /by Sunday
+deadline return book /by 2019-12-02
 ```
 
 **Expected output:**
 
 ```text
 Got it. I've added this task:
-    [D][ ] return book (by: Sunday)
+    [D][ ] return book (by: Dec 2 2019)
 Now you have 2 tasks in the list.
 ```
 
@@ -152,24 +152,24 @@ Now you have 2 tasks in the list.
 
 ```text
 T | 0 | read book
-D | 0 | return book | Sunday
+D | 0 | return book | 2019-12-02
 ```
 
 ## UI-03: Add an event
 
-**Aim:** Verify that an event with non-empty `/from` and `/to` values is added.
+**Aim:** Verify that an event accepts ISO dates and displays them in a human-readable format.
 
 **Inputs:**
 
 ```text
-event project meeting /from 2pm /to 3pm
+event project meeting /from 2019-12-03 /to 2019-12-04
 ```
 
 **Expected output:**
 
 ```text
 Got it. I've added this task:
-    [E][ ] project meeting (from: 2pm to: 3pm)
+    [E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 Now you have 3 tasks in the list.
 ```
 
@@ -177,8 +177,8 @@ Now you have 3 tasks in the list.
 
 ```text
 T | 0 | read book
-D | 0 | return book | Sunday
-E | 0 | project meeting | 2pm | 3pm
+D | 0 | return book | 2019-12-02
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
 ```
 
 ## UI-04: Reject an empty todo description
@@ -220,7 +220,7 @@ A deadline must have a non-empty /by value.
 **Inputs:**
 
 ```text
-event project meeting /from /to 3pm
+event project meeting /from /to 2019-12-04
 ```
 
 **Expected output:**
@@ -229,9 +229,41 @@ event project meeting /from /to 3pm
 An event must have non-empty /from and /to values.
 ```
 
+## UI-DATE-01: Reject an impossible deadline date
+
+**Aim:** Verify that an invalid calendar date is rejected without terminating the chatbot or adding a task.
+
+**Inputs:**
+
+```text
+deadline invalid date /by 2019-02-29
+```
+
+**Expected output:**
+
+```text
+Dates must be in yyyy-MM-dd format.
+```
+
+## UI-DATE-02: Reject an event date in the wrong format
+
+**Aim:** Verify that a non-ISO event date is rejected without terminating the chatbot or adding a task.
+
+**Inputs:**
+
+```text
+event invalid date /from 2019/12/03 /to 2019-12-04
+```
+
+**Expected output:**
+
+```text
+Dates must be in yyyy-MM-dd format.
+```
+
 ## UI-07: List tasks after invalid inputs
 
-**Aim:** Verify that the three invalid tasks were not added to the task list.
+**Aim:** Verify that the five invalid tasks were not added to the task list.
 
 **Inputs:**
 
@@ -244,8 +276,8 @@ list
 ```text
 Here are the tasks in your list:
     1.[T][ ] read book
-    2.[D][ ] return book (by: Sunday)
-    3.[E][ ] project meeting (from: 2pm to: 3pm)
+    2.[D][ ] return book (by: Dec 2 2019)
+    3.[E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
 ## UI-08: Mark a task
@@ -269,8 +301,8 @@ Nice! I've marked this task as done:
 
 ```text
 T | 1 | read book
-D | 0 | return book | Sunday
-E | 0 | project meeting | 2pm | 3pm
+D | 0 | return book | 2019-12-02
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
 ```
 
 ## UI-09: Unmark a task
@@ -294,8 +326,8 @@ OK, I've marked this task as not done yet:
 
 ```text
 T | 0 | read book
-D | 0 | return book | Sunday
-E | 0 | project meeting | 2pm | 3pm
+D | 0 | return book | 2019-12-02
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
 ```
 
 ## UI-10: Reject an unknown command
@@ -472,15 +504,15 @@ mark 3
 
 ```text
 Nice! I've marked this task as done:
-    [E][X] project meeting (from: 2pm to: 3pm)
+    [E][X] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
 **Expected data file after command:**
 
 ```text
 T | 0 | read book
-D | 0 | return book | Sunday
-E | 1 | project meeting | 2pm | 3pm
+D | 0 | return book | 2019-12-02
+E | 1 | project meeting | 2019-12-03 | 2019-12-04
 ```
 
 ## UI-21: Unmark the last task
@@ -497,15 +529,15 @@ unmark 3
 
 ```text
 OK, I've marked this task as not done yet:
-    [E][ ] project meeting (from: 2pm to: 3pm)
+    [E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
 **Expected data file after command:**
 
 ```text
 T | 0 | read book
-D | 0 | return book | Sunday
-E | 0 | project meeting | 2pm | 3pm
+D | 0 | return book | 2019-12-02
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
 ```
 
 ## UI-22: Delete a task
@@ -522,7 +554,7 @@ delete 2
 
 ```text
 Noted. I've removed this task:
-    [D][ ] return book (by: Sunday)
+    [D][ ] return book (by: Dec 2 2019)
 Now you have 2 tasks in the list.
 ```
 
@@ -530,7 +562,7 @@ Now you have 2 tasks in the list.
 
 ```text
 T | 0 | read book
-E | 0 | project meeting | 2pm | 3pm
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
 ```
 
 ## UI-23: List tasks after deletion
@@ -548,7 +580,7 @@ list
 ```text
 Here are the tasks in your list:
     1.[T][ ] read book
-    2.[E][ ] project meeting (from: 2pm to: 3pm)
+    2.[E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
 ## UI-24: Reject delete without a task number
