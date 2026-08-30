@@ -6,6 +6,7 @@ import java.nio.file.AtomicMoveNotSupportedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -184,6 +185,8 @@ public class Jonk {
                     }
                 } catch (JonkException e) {
                     System.out.println(e.getMessage());
+                } catch (DateTimeParseException e) {
+                    System.out.println("Dates must be in yyyy-MM-dd format.");
                 }
             }
 
@@ -293,7 +296,7 @@ public class Jonk {
 
             try {
                 tasks.add(parseTask(line));
-            } catch (JonkException e) {
+            } catch (JonkException | DateTimeParseException e) {
                 throw new JonkException("Could not load tasks from " + FILE_PATH
                         + ": invalid data at line " + (i + 1) + " (" + e.getMessage()
                         + "). Starting with an empty task list.", e);
