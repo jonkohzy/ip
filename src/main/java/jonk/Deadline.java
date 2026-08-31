@@ -12,26 +12,26 @@ public class Deadline extends Task {
     private static final DateTimeFormatter DISPLAY_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM d yyyy");
 
-    private final LocalDate by;
+    private final LocalDate dueDate;
 
     /**
      * Creates a deadline with the specified description and due date.
      *
      * @param description Description of the deadline.
-     * @param by Due date of the deadline in {@code yyyy-MM-dd} format.
+     * @param dueDate Due date of the deadline in {@code yyyy-MM-dd} format.
      */
-    public Deadline(String description, String by) {
+    public Deadline(String description, String dueDate) {
         super(description);
-        this.by = LocalDate.parse(by);
+        this.dueDate = LocalDate.parse(dueDate);
     }
 
     @Override
     public String toString() {
-        return "[D]" + super.toString() + " (by: " + by.format(DISPLAY_DATE_FORMAT) + ")";
+        return "[D]" + super.toString() + " (by: " + dueDate.format(DISPLAY_DATE_FORMAT) + ")";
     }
 
     @Override
     public String toFileString() {
-        return "D | " + super.toFileString() + " | " + encodeFileField(by.toString());
+        return "D | " + super.toFileString() + " | " + encodeFileField(dueDate.toString());
     }
 }

@@ -71,6 +71,24 @@ public class ParserTest {
     }
 
     @Test
+    public void parseKeyword_validKeyword_returnsKeyword() throws JonkException {
+        assertEquals("book", Parser.parseKeyword("find book"));
+    }
+
+    @Test
+    public void parseKeyword_multiWordKeyword_returnsCompleteKeyword() throws JonkException {
+        assertEquals("project meeting", Parser.parseKeyword("find project meeting"));
+    }
+
+    @Test
+    public void parseKeyword_missingKeyword_throwsJonkException() {
+        JonkException exception = assertThrows(JonkException.class,
+                () -> Parser.parseKeyword("find"));
+
+        assertEquals("Please provide a keyword to find.", exception.getMessage());
+    }
+
+    @Test
     public void parseTask_validTodo_returnsTodo() throws JonkException {
         Task task = Parser.parseTask("todo read book");
 

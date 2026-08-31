@@ -66,6 +66,23 @@ public class TaskListTest {
     }
 
     @Test
+    public void find_keywordInMultipleDescriptions_returnsMatchingTasksInOriginalOrder() {
+        Task firstMatch = new Todo("read book");
+        Task nonMatch = new Event("project meeting", "2019-12-03", "2019-12-04");
+        Task secondMatch = new Deadline("return book", "2019-12-02");
+        TaskList taskList = new TaskList(List.of(firstMatch, nonMatch, secondMatch));
+
+        assertEquals(List.of(firstMatch, secondMatch), taskList.find("book"));
+    }
+
+    @Test
+    public void find_keywordNotInAnyDescription_returnsEmptyList() {
+        TaskList taskList = new TaskList(List.of(new Todo("read book")));
+
+        assertEquals(List.of(), taskList.find("library"));
+    }
+
+    @Test
     public void delete_middleTask_returnsTaskAndRemovesIt() throws JonkException {
         Task firstTask = new Todo("first task");
         Task middleTask = new Todo("middle task");
