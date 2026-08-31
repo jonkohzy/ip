@@ -40,6 +40,21 @@ public final class Parser {
     }
 
     /**
+     * Extracts the keyword from a find command.
+     *
+     * @param input Complete find command entered by the user.
+     * @return Keyword to search for in task descriptions.
+     * @throws JonkException If the command does not contain a keyword.
+     */
+    public static String parseKeyword(String input) throws JonkException {
+        String[] parts = splitCommand(input);
+        if (parts.length != 2 || parts[1].isBlank()) {
+            throw new JonkException("Please provide a keyword to find.");
+        }
+        return parts[1].trim();
+    }
+
+    /**
      * Creates a task from a todo, deadline, or event command.
      *
      * @param input Complete add-task command entered by the user.

@@ -83,8 +83,20 @@ public class Jonk {
             case "unmark" -> updateTaskStatus(input, false);
             case "todo", "deadline", "event" -> addTask(input);
             case "delete" -> deleteTask(input);
+            case "find" -> findTasks(input);
             default -> throw new JonkException("Sorry, I don't know what that means");
         }
+    }
+
+    /**
+     * Finds and displays tasks whose descriptions contain the supplied keyword.
+     *
+     * @param input Find command entered by the user.
+     * @throws JonkException If the command does not contain a keyword.
+     */
+    private void findTasks(String input) throws JonkException {
+        String keyword = Parser.parseKeyword(input);
+        ui.showMatchingTasks(tasks.find(keyword));
     }
 
     /**

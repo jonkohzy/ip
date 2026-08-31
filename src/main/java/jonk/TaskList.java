@@ -57,6 +57,22 @@ public class TaskList {
     }
 
     /**
+     * Finds tasks whose descriptions contain the specified keyword.
+     *
+     * @param keyword Keyword to search for.
+     * @return Snapshot containing the matching tasks in their original order.
+     */
+    public List<Task> find(String keyword) {
+        List<Task> matchingTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            if (task.getDescription().contains(keyword)) {
+                matchingTasks.add(task);
+            }
+        }
+        return List.copyOf(matchingTasks);
+    }
+
+    /**
      * Returns the number of stored tasks.
      *
      * @return Number of stored tasks.

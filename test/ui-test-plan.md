@@ -280,6 +280,57 @@ Here are the tasks in your list:
     3.[E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
+## UI-FIND-01: Find multiple matching tasks
+
+**Aim:** Verify that `find` displays only tasks whose descriptions contain the keyword and numbers the matches
+from one in their original order.
+
+**Inputs:**
+
+```text
+find book
+```
+
+**Expected output:**
+
+```text
+Here are the matching tasks in your list:
+    1.[T][ ] read book
+    2.[D][ ] return book (by: Dec 2 2019)
+```
+
+## UI-FIND-02: Find no matching tasks
+
+**Aim:** Verify that `find` displays an empty matching-task list when no description contains the keyword.
+
+**Inputs:**
+
+```text
+find library
+```
+
+**Expected output:**
+
+```text
+Here are the matching tasks in your list:
+```
+
+## UI-FIND-03: Reject find without a keyword
+
+**Aim:** Verify that `find` requires a non-empty keyword and does not terminate the chatbot when it is missing.
+
+**Inputs:**
+
+```text
+find
+```
+
+**Expected output:**
+
+```text
+Please provide a keyword to find.
+```
+
 ## UI-08: Mark a task
 
 **Aim:** Verify that the first task can be marked as done.
