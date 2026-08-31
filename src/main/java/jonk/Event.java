@@ -12,31 +12,31 @@ public class Event extends Task {
     private static final DateTimeFormatter DISPLAY_DATE_FORMAT =
             DateTimeFormatter.ofPattern("MMM d yyyy");
 
-    private final LocalDate from;
-    private final LocalDate to;
+    private final LocalDate startDate;
+    private final LocalDate endDate;
 
     /**
      * Creates an event with the specified description and date range.
      *
      * @param description Description of the event.
-     * @param from Start date of the event in {@code yyyy-MM-dd} format.
-     * @param to End date of the event in {@code yyyy-MM-dd} format.
+     * @param startDate Start date of the event in {@code yyyy-MM-dd} format.
+     * @param endDate End date of the event in {@code yyyy-MM-dd} format.
      */
-    public Event(String description, String from, String to) {
+    public Event(String description, String startDate, String endDate) {
         super(description);
-        this.from = LocalDate.parse(from);
-        this.to = LocalDate.parse(to);
+        this.startDate = LocalDate.parse(startDate);
+        this.endDate = LocalDate.parse(endDate);
     }
 
     @Override
     public String toString() {
-        return "[E]" + super.toString() + " (from: " + from.format(DISPLAY_DATE_FORMAT)
-                + " to: " + to.format(DISPLAY_DATE_FORMAT) + ")";
+        return "[E]" + super.toString() + " (from: " + startDate.format(DISPLAY_DATE_FORMAT)
+                + " to: " + endDate.format(DISPLAY_DATE_FORMAT) + ")";
     }
 
     @Override
     public String toFileString() {
-        return "E | " + super.toFileString() + " | " + encodeFileField(from.toString())
-                + " | " + encodeFileField(to.toString());
+        return "E | " + super.toFileString() + " | " + encodeFileField(startDate.toString())
+                + " | " + encodeFileField(endDate.toString());
     }
 }

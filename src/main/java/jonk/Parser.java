@@ -56,10 +56,10 @@ public final class Parser {
 
         String[] details = parts[1].trim().split("\\s+(?=/)");
         return switch (taskType) {
-        case "todo" -> parseTodo(details);
-        case "deadline" -> parseDeadline(details);
-        case "event" -> parseEvent(details);
-        default -> throw new JonkException("Sorry, I don't know what that means");
+            case "todo" -> parseTodo(details);
+            case "deadline" -> parseDeadline(details);
+            case "event" -> parseEvent(details);
+            default -> throw new JonkException("Sorry, I don't know what that means");
         };
     }
 
@@ -99,13 +99,13 @@ public final class Parser {
             throw new JonkException("A deadline must have a non-empty /by value.");
         }
 
-        String[] byDetails = details[1].trim().split("\\s+", 2);
-        if (byDetails.length != 2 || !byDetails[0].equals("/by")
-                || byDetails[1].isBlank()) {
+        String[] dueDateDetails = details[1].trim().split("\\s+", 2);
+        if (dueDateDetails.length != 2 || !dueDateDetails[0].equals("/by")
+                || dueDateDetails[1].isBlank()) {
             throw new JonkException("A deadline must have a non-empty /by value.");
         }
 
-        return new Deadline(details[0], byDetails[1].trim());
+        return new Deadline(details[0], dueDateDetails[1].trim());
     }
 
     /**
@@ -144,11 +144,11 @@ public final class Parser {
      */
     private static JonkException missingTaskDetailsException(String taskType) {
         return switch (taskType) {
-        case "todo" -> new JonkException("A todo must have a non-empty description.");
-        case "deadline" -> new JonkException("A deadline must have a non-empty /by value.");
-        case "event" -> new JonkException(
-                "An event must have non-empty /from and /to values.");
-        default -> new JonkException("Sorry, I don't know what that means");
+            case "todo" -> new JonkException("A todo must have a non-empty description.");
+            case "deadline" -> new JonkException("A deadline must have a non-empty /by value.");
+            case "event" -> new JonkException(
+                    "An event must have non-empty /from and /to values.");
+            default -> new JonkException("Sorry, I don't know what that means");
         };
     }
 }

@@ -73,17 +73,17 @@ public class Jonk {
         String commandWord = Parser.parseCommandWord(input);
 
         switch (commandWord) {
-        case "list" -> {
-            if (!input.equals("list")) {
-                throw new JonkException("Sorry, I don't know what that means");
+            case "list" -> {
+                if (!input.equals("list")) {
+                    throw new JonkException("Sorry, I don't know what that means");
+                }
+                ui.showTaskList(tasks.asList());
             }
-            ui.showTaskList(tasks.asList());
-        }
-        case "mark" -> updateTaskStatus(input, true);
-        case "unmark" -> updateTaskStatus(input, false);
-        case "todo", "deadline", "event" -> addTask(input);
-        case "delete" -> deleteTask(input);
-        default -> throw new JonkException("Sorry, I don't know what that means");
+            case "mark" -> updateTaskStatus(input, true);
+            case "unmark" -> updateTaskStatus(input, false);
+            case "todo", "deadline", "event" -> addTask(input);
+            case "delete" -> deleteTask(input);
+            default -> throw new JonkException("Sorry, I don't know what that means");
         }
     }
 
