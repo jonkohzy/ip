@@ -4,6 +4,8 @@
 
 - Run the test cases in the listed order in one fresh Jonk process. The task list is therefore shared between cases.
 - Compile and run with the Java version required by `AGENTS.md`.
+- Start the command-line test process with `java -cp build/classes/java/main jonk.Jonk`; `./gradlew run` starts
+  the JavaFX application.
 - A line whose trimmed content is only Jonk's underscores frames each command response. Record it in the session transcript, but exclude it from the expected-output comparison.
 - Before comparison, convert CRLF line endings to LF and expand each tab to four spaces in both actual and expected output. Do not otherwise trim or ignore whitespace or output lines.
 - Before starting the session, replace `./data/jonk.txt` with the exact startup fixture below. After each case that specifies expected data-file contents, read the file and compare it exactly after converting CRLF line endings to LF.
