@@ -11,6 +11,14 @@ public class Jonk {
     private final Storage storage;
     private final TaskList tasks;
     private final Ui ui;
+    private final String startupError;
+
+    /**
+     * Creates a Jonk chatbot backed by the default data file.
+     */
+    public Jonk() {
+        this(FILE_PATH);
+    }
 
     /**
      * Creates a Jonk chatbot backed by the specified data file.
@@ -22,13 +30,15 @@ public class Jonk {
         storage = new Storage(filePath);
 
         TaskList loadedTasks;
+        String loadError = null;
         try {
             loadedTasks = new TaskList(storage.load());
         } catch (JonkException e) {
-            ui.showError(e.getMessage());
+            loadError = e.getMessage();
             loadedTasks = new TaskList();
         }
         tasks = loadedTasks;
+        startupError = loadError;
     }
 
     /**
@@ -36,17 +46,14 @@ public class Jonk {
      */
     public void run() {
         ui.showWelcome();
+        if (startupError != null) {
+            ui.showError(startupError);
+        }
 
         String input = ui.readCommand();
         while (!input.equals("bye")) {
             ui.showSeparator();
-            try {
-                executeCommand(input);
-            } catch (JonkException e) {
-                ui.showError(e.getMessage());
-            } catch (DateTimeParseException e) {
-                ui.showError("Dates must be in yyyy-MM-dd format.");
-            }
+            ui.showResponse(getResponse(input));
             ui.showSeparator();
             input = ui.readCommand();
         }
@@ -64,20 +71,52 @@ public class Jonk {
     }
 
     /**
+     * Returns the greeting displayed when the GUI opens.
+     *
+     * @return Greeting and any error encountered while loading saved tasks.
+     */
+    public String getWelcomeMessage() {
+        if (startupError == null) {
+            return ui.formatGreeting();
+        }
+        return ui.formatGreeting() + "\n" + startupError;
+    }
+
+    /**
+     * Processes a command and returns the response for display in any user interface.
+     *
+     * @param input Complete command entered by the user.
+     * @return Response to display to the user.
+     */
+    public String getResponse(String input) {
+        if (input.equals("bye")) {
+            return ui.formatFarewell();
+        }
+
+        try {
+            return executeCommand(input);
+        } catch (JonkException e) {
+            return e.getMessage();
+        } catch (DateTimeParseException e) {
+            return "Dates must be in yyyy-MM-dd format.";
+        }
+    }
+
+    /**
      * Delegates one user command to the appropriate application operation.
      *
      * @param input Complete command entered by the user.
      * @throws JonkException If the command is invalid or a storage operation fails.
      */
-    private void executeCommand(String input) throws JonkException {
+    private String executeCommand(String input) throws JonkException {
         String commandWord = Parser.parseCommandWord(input);
 
-        switch (commandWord) {
+        return switch (commandWord) {
             case "list" -> {
                 if (!input.equals("list")) {
                     throw new JonkException("Sorry, I don't know what that means");
                 }
-                ui.showTaskList(tasks.asList());
+                yield ui.formatTaskList(tasks.asList());
             }
             case "mark" -> updateTaskStatus(input, true);
             case "unmark" -> updateTaskStatus(input, false);
@@ -85,18 +124,19 @@ public class Jonk {
             case "delete" -> deleteTask(input);
             case "find" -> findTasks(input);
             default -> throw new JonkException("Sorry, I don't know what that means");
-        }
+        };
     }
 
     /**
-     * Finds and displays tasks whose descriptions contain the supplied keyword.
+     * Finds and formats tasks whose descriptions contain the supplied keyword.
      *
      * @param input Find command entered by the user.
+     * @return Matching-task response.
      * @throws JonkException If the command does not contain a keyword.
      */
-    private void findTasks(String input) throws JonkException {
+    private String findTasks(String input) throws JonkException {
         String keyword = Parser.parseKeyword(input);
-        ui.showMatchingTasks(tasks.find(keyword));
+        return ui.formatMatchingTasks(tasks.find(keyword));
     }
 
     /**
@@ -104,9 +144,10 @@ public class Jonk {
      *
      * @param input Mark or unmark command entered by the user.
      * @param isDone New completion status.
+     * @return Task-status response.
      * @throws JonkException If the task number is invalid or saving fails.
      */
-    private void updateTaskStatus(String input, boolean isDone) throws JonkException {
+    private String updateTaskStatus(String input, boolean isDone) throws JonkException {
         int taskNumber = Parser.parseTaskNumber(input);
         Task task = tasks.get(taskNumber);
         boolean previousStatus = task.isDone();
@@ -119,16 +160,17 @@ public class Jonk {
             throw e;
         }
 
-        ui.showTaskStatusUpdated(task, isDone);
+        return ui.formatTaskStatusUpdated(task, isDone);
     }
 
     /**
      * Adds a parsed task and removes it again if saving fails.
      *
      * @param input Add-task command entered by the user.
+     * @return Task-added response.
      * @throws JonkException If the command is invalid or saving fails.
      */
-    private void addTask(String input) throws JonkException {
+    private String addTask(String input) throws JonkException {
         Task newTask = Parser.parseTask(input);
         tasks.add(newTask);
 
@@ -139,16 +181,17 @@ public class Jonk {
             throw e;
         }
 
-        ui.showTaskAdded(newTask, tasks.size());
+        return ui.formatTaskAdded(newTask, tasks.size());
     }
 
     /**
      * Deletes a task and restores it to its former position if saving fails.
      *
      * @param input Delete command entered by the user.
+     * @return Task-deleted response.
      * @throws JonkException If the task number is invalid or saving fails.
      */
-    private void deleteTask(String input) throws JonkException {
+    private String deleteTask(String input) throws JonkException {
         int taskNumber = Parser.parseTaskNumber(input);
         Task removedTask = tasks.delete(taskNumber);
 
@@ -159,7 +202,7 @@ public class Jonk {
             throw e;
         }
 
-        ui.showTaskDeleted(removedTask, tasks.size());
+        return ui.formatTaskDeleted(removedTask, tasks.size());
     }
 
     /**
