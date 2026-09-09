@@ -212,6 +212,7 @@ public class Jonk {
      * @param isDone Whether the task should be complete.
      */
     private void setTaskStatus(Task task, boolean isDone) {
+        assert task != null : "Task to update should not be null";
         if (isDone) {
             task.markAsDone();
         } else {
