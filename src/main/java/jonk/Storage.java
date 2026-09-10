@@ -117,6 +117,17 @@ public class Storage {
      */
     private Task parseTask(String line) throws JonkException {
         List<String> fields = splitFileFields(line);
+        validateTaskFields(fields);
+        return createTask(fields);
+    }
+
+    /**
+     * Validates the saved task's type, field count, completion status, and required details.
+     *
+     * @param fields Decoded fields, including at least the task type field.
+     * @throws JonkException If any saved field is missing or invalid.
+     */
+    private void validateTaskFields(List<String> fields) throws JonkException {
         String taskType = fields.getFirst();
         int expectedFieldCount = switch (taskType) {
             case "T" -> 3;
@@ -140,15 +151,25 @@ public class Storage {
                 throw new JonkException("task details cannot be empty");
             }
         }
+    }
 
+    /**
+     * Creates a task and restores its completion status from structurally validated fields.
+     *
+     * @param fields Saved fields that have passed {@link #validateTaskFields(List)}.
+     * @return Recreated task.
+     * @throws DateTimeParseException If a saved date is invalid.
+     */
+    private Task createTask(List<String> fields) {
+        String taskType = fields.getFirst();
         Task task = switch (taskType) {
             case "T" -> new Todo(fields.get(2));
             case "D" -> new Deadline(fields.get(2), fields.get(3));
             case "E" -> new Event(fields.get(2), fields.get(3), fields.get(4));
-            default -> throw new AssertionError("Task type was validated above");
+            default -> throw new AssertionError("Task type must be validated before construction");
         };
 
-        if (status.equals("1")) {
+        if (fields.get(1).equals("1")) {
             task.markAsDone();
         }
         return task;
