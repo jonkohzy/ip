@@ -35,6 +35,8 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     public void initialize() {
+        assert scrollPane != null : "Scroll pane should be injected before initialization";
+        assert dialogContainer != null : "Dialog container should be injected before initialization";
         dialogContainer.heightProperty().addListener(
                 (observable, oldHeight, newHeight) -> scrollPane.setVvalue(1.0));
     }
@@ -54,6 +56,7 @@ public class MainWindow extends AnchorPane {
      */
     @FXML
     private void handleUserInput() {
+        assert jonk != null : "Jonk should be set before handling user input";
         String input = userInput.getText();
         String response = jonk.getResponse(input);
 
