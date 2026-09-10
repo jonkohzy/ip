@@ -96,6 +96,27 @@ public class TaskListTest {
     }
 
     @Test
+    public void find_differentCase_returnsOnlyExactCaseMatches() {
+        Task matchingTask = new Todo("read book");
+        TaskList taskList = new TaskList(List.of(new Todo("read Book"), matchingTask));
+
+        assertEquals(List.of(matchingTask), taskList.find("book"));
+    }
+
+    @Test
+    public void find_resultSnapshot_isUnmodifiableAndIndependentOfListChanges() throws JonkException {
+        Task matchingTask = new Todo("read book");
+        TaskList taskList = new TaskList(List.of(matchingTask));
+        List<Task> matches = taskList.find("book");
+
+        assertThrows(UnsupportedOperationException.class, () -> matches.add(new Todo("return book")));
+        taskList.delete(1);
+        taskList.add(new Todo("buy book"));
+
+        assertEquals(List.of(matchingTask), matches);
+    }
+
+    @Test
     public void delete_invalidTaskNumber_throwsJonkExceptionAndPreservesList() {
         Task onlyTask = new Todo("only task");
         TaskList taskList = new TaskList(List.of(onlyTask));
