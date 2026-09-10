@@ -138,6 +138,13 @@ public class TaskListTest {
     }
 
     @Test
+    public void removeLast_emptyList_throwsAssertionError() {
+        TaskList taskList = new TaskList();
+
+        assertThrows(AssertionError.class, taskList::removeLast);
+    }
+
+    @Test
     public void restore_deletedTask_reinsertsTaskAtFormerPosition() throws JonkException {
         Task firstTask = new Todo("first task");
         Task middleTask = new Todo("middle task");
@@ -148,5 +155,12 @@ public class TaskListTest {
         taskList.restore(2, deletedTask);
 
         assertEquals(List.of(firstTask, middleTask, lastTask), taskList.asList());
+    }
+
+    @Test
+    public void restore_invalidTaskNumber_throwsAssertionError() {
+        TaskList taskList = new TaskList(List.of(new Todo("existing task")));
+
+        assertThrows(AssertionError.class, () -> taskList.restore(3, new Todo("restored task")));
     }
 }

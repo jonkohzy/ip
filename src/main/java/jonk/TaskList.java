@@ -90,6 +90,7 @@ public class TaskList {
      * Removes the final task to roll back an addition whose save failed.
      */
     void removeLast() {
+        assert !tasks.isEmpty() : "Task list should contain the task being rolled back";
         tasks.removeLast();
     }
 
@@ -100,6 +101,9 @@ public class TaskList {
      * @param task Task to restore.
      */
     void restore(int taskNumber, Task task) {
+        assert task != null : "Restored task should not be null";
+        assert taskNumber >= 1 && taskNumber <= tasks.size() + 1
+                : "Restored task number should be a valid insertion position";
         tasks.add(taskNumber - 1, task);
     }
 
