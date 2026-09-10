@@ -81,6 +81,27 @@ public class StorageTest {
     }
 
     @Test
+    public void load_extraTodoField_throwsJonkException() throws IOException {
+        Storage storage = createStorageWithData("T | 0 | read book | unexpected\n");
+
+        JonkException exception = assertThrows(JonkException.class, storage::load);
+
+        assertTrue(exception.getMessage().contains("task type T requires 3 fields, but found 4"));
+    }
+
+    @Test
+    public void load_invalidLaterRecord_reportsLineAndPreservesFile() throws IOException {
+        String data = "T | 0 | read book\n\nE | 1 | meeting | 2019-12-03\n";
+        Storage storage = createStorageWithData(data);
+
+        JonkException exception = assertThrows(JonkException.class, storage::load);
+
+        assertTrue(exception.getMessage().contains("invalid data at line 3"));
+        assertTrue(exception.getMessage().contains("task type E requires 5 fields, but found 4"));
+        assertEquals(data, Files.readString(tempDirectory.resolve("jonk.txt")));
+    }
+
+    @Test
     public void load_emptyTaskDetails_throwsJonkException() throws IOException {
         Storage storage = createStorageWithData("T | 0 |   \n");
 
