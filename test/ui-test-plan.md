@@ -318,6 +318,22 @@ find library
 Here are the matching tasks in your list:
 ```
 
+## UI-FIND-CASE: Preserve case-sensitive search
+
+**Aim:** Verify that stream-based filtering keeps the existing case-sensitive matching behavior.
+
+**Inputs:**
+
+```text
+find Book
+```
+
+**Expected output:**
+
+```text
+Here are the matching tasks in your list:
+```
+
 ## UI-FIND-03: Reject find without a keyword
 
 **Aim:** Verify that `find` requires a non-empty keyword and does not terminate the chatbot when it is missing.
