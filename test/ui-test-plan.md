@@ -11,8 +11,80 @@
 - Before comparison, convert CRLF line endings to LF and expand each tab to four spaces in both actual and expected output. Do not otherwise trim or ignore whitespace or output lines.
 - Before starting the session, replace `./data/jonk.txt` with the exact startup fixture below. After each case that specifies expected data-file contents, read the file and compare it exactly after converting CRLF line endings to LF.
 - Stop the session immediately after the first failure.
+- Check that the startup greeting includes `Type help to see the available commands.`.
 
 **Startup data-file fixture:**
+
+```text
+T | 1 | write \| report
+D | 0 | return notes \\ room | 2019-10-15
+
+E | 1 | project demo | 2019-10-16 | 2019-10-17
+```
+
+## UI-HELP-01: Show help with loaded tasks
+
+**Aim:** Verify that help lists every supported command, examples, date rules, and task-number guidance without rewriting stored tasks.
+
+**Inputs:**
+
+```text
+help
+```
+
+**Expected output:**
+
+```text
+Here's what you can do with Jonk:
+help - Show this help page.
+list - Show all tasks and their task numbers.
+todo DESCRIPTION - Add a task without a date.
+  Example: todo read book
+deadline DESCRIPTION /by DATE - Add a task with a due date.
+  Example: deadline return book /by 2026-09-15
+event DESCRIPTION /from DATE /to DATE - Add an event with start and end dates.
+  Example: event project meeting /from 2026-09-16 /to 2026-09-17
+mark NUMBER - Mark a task as done. Example: mark 1
+unmark NUMBER - Mark a task as not done. Example: unmark 1
+delete NUMBER - Delete a task. Example: delete 1
+find KEYWORD - Find tasks containing the keyword. Example: find book
+bye - Exit Jonk.
+
+Replace uppercase placeholders with your own values; do not type the placeholders.
+Dates use yyyy-MM-dd, for example 2026-09-15.
+Use task numbers from list, starting at 1, for mark, unmark, and delete.
+Find matches are case-sensitive; their displayed numbers are not task numbers from list.
+Descriptions and keywords may contain spaces and must not be empty.
+Command words are lowercase. Type help, list, and bye without arguments.
+Help does not change your tasks.
+```
+
+**Expected data file after command:**
+
+```text
+T | 1 | write \| report
+D | 0 | return notes \\ room | 2019-10-15
+
+E | 1 | project demo | 2019-10-16 | 2019-10-17
+```
+
+## UI-HELP-02: Reject help arguments
+
+**Aim:** Verify that unsupported help arguments produce a usage error and preserve stored tasks.
+
+**Inputs:**
+
+```text
+help todo
+```
+
+**Expected output:**
+
+```text
+The help command takes no arguments. Type help to see all commands.
+```
+
+**Expected data file after command:**
 
 ```text
 T | 1 | write \| report
@@ -108,6 +180,61 @@ Now you have 0 tasks in the list.
 ```
 
 **Expected data file after command:** The file is empty (zero bytes).
+
+## UI-HELP-03: Show help with an empty list
+
+**Aim:** Verify that help remains available after all tasks have been deleted and accepts leading spaces.
+
+**Inputs:**
+
+```text
+  help
+```
+
+**Expected output:**
+
+```text
+Here's what you can do with Jonk:
+help - Show this help page.
+list - Show all tasks and their task numbers.
+todo DESCRIPTION - Add a task without a date.
+  Example: todo read book
+deadline DESCRIPTION /by DATE - Add a task with a due date.
+  Example: deadline return book /by 2026-09-15
+event DESCRIPTION /from DATE /to DATE - Add an event with start and end dates.
+  Example: event project meeting /from 2026-09-16 /to 2026-09-17
+mark NUMBER - Mark a task as done. Example: mark 1
+unmark NUMBER - Mark a task as not done. Example: unmark 1
+delete NUMBER - Delete a task. Example: delete 1
+find KEYWORD - Find tasks containing the keyword. Example: find book
+bye - Exit Jonk.
+
+Replace uppercase placeholders with your own values; do not type the placeholders.
+Dates use yyyy-MM-dd, for example 2026-09-15.
+Use task numbers from list, starting at 1, for mark, unmark, and delete.
+Find matches are case-sensitive; their displayed numbers are not task numbers from list.
+Descriptions and keywords may contain spaces and must not be empty.
+Command words are lowercase. Type help, list, and bye without arguments.
+Help does not change your tasks.
+```
+
+**Expected data file after command:** The file is empty (zero bytes).
+
+## UI-HELP-04: List tasks after help
+
+**Aim:** Verify that viewing help did not add sample tasks or otherwise change the empty task list.
+
+**Inputs:**
+
+```text
+list
+```
+
+**Expected output:**
+
+```text
+Here are the tasks in your list:
+```
 
 ## UI-01: Add a todo
 
