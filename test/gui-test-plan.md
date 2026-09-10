@@ -19,7 +19,7 @@ E | 1 | project demo | 2019-10-16 | 2019-10-17
 
 **Inputs:** Launch the application.
 
-**Expected output:** A non-resizable window titled `Jonk` displays Jonk's greeting, a command field, and a `Send`
+**Expected output:** A non-resizable window titled `Jonk` displays Jonk's greeting and `Type help to see the available commands.`, a command field, and a `Send`
 button.
 
 ## GUI-02: Submit a command with Enter
@@ -39,6 +39,16 @@ tasks with their completion states and dates.
 
 **Expected output:** The conversation displays the user command and Jonk's task-added response with a total of four
 tasks. The data file ends with `T | 0 | GUI smoke test`.
+
+## GUI-HELP-01: Read the help page
+
+**Aim:** Verify that the shared help response is readable in the graphical conversation and preserves tasks.
+
+**Inputs:** Type `help` and press Enter. Scroll through the response from top to bottom, then submit `list`.
+
+**Expected output:** A Jonk response bubble contains the complete help page documented in `docs/README.md`,
+including all ten commands, examples, and guidance. Text wraps within the window, and every line can be reached
+by scrolling. The subsequent list still contains the four tasks, and the data file is unchanged.
 
 ## GUI-04: Exit using the bye command
 

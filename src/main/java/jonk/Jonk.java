@@ -112,6 +112,12 @@ public class Jonk {
         String commandWord = Parser.parseCommandWord(input);
 
         return switch (commandWord) {
+            case "help" -> {
+                if (!input.trim().equals("help")) {
+                    throw new JonkException("The help command takes no arguments. Type help to see all commands.");
+                }
+                yield ui.formatHelp();
+            }
             case "list" -> {
                 if (!input.equals("list")) {
                     throw new JonkException("Sorry, I don't know what that means");
