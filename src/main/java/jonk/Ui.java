@@ -10,11 +10,11 @@ public class Ui {
     private static final String SEPARATOR =
             "____________________________________________________________";
     private static final String BANNER = """
-             _  ___  _   _ _  __
-                | |/ _ \\| \\ | | |/ /
-             _  | | | | |  \\| | ' /\s
-            | |_| | |_| | |\\  | . \\\s
-             \\___/ \\___/|_| \\_|_|\\_\\""";
+               __  ____  _   ____ __
+              / / / __ \\ | / / //_/
+         __  / / / / / /  |/ / ,<
+        / /_/ / / /_/ / /|  / /| |
+        \\____/  \\____/_/ |_/_/ |_|""";
 
     private final Scanner scanner;
 
@@ -39,7 +39,9 @@ public class Ui {
      * @return Jonk's greeting.
      */
     public String formatGreeting() {
-        return "Hello! I'm Jonk.\nWhat can I do for you?\nType help to see the available commands.";
+        return "Systems online! I'm Jonk, your mission-control copilot."
+                + "\nWhat shall we put on the flight plan?"
+                + "\nType help to see the available commands.";
     }
 
     /**
@@ -49,7 +51,7 @@ public class Ui {
      */
     public String formatHelp() {
         return """
-                Here's what you can do with Jonk:
+                Mission guide online. Here's what Jonk can do:
                 help - Show this help page.
                 list - Show all tasks and their task numbers.
                 todo DESCRIPTION - Add a task without a date.
@@ -62,7 +64,7 @@ public class Ui {
                 unmark NUMBER - Mark a task as not done. Example: unmark 1
                 delete NUMBER - Delete a task. Example: delete 1
                 find KEYWORD - Find tasks containing the keyword. Example: find book
-                bye - Exit Jonk.
+                bye - Close mission control.
 
                 Replace uppercase placeholders with your own values; do not type the placeholders.
                 Dates use yyyy-MM-dd, for example 2026-09-15.
@@ -105,7 +107,7 @@ public class Ui {
      * @return Numbered task list.
      */
     public String formatTaskList(List<Task> tasks) {
-        return formatNumberedTasks("Here are the tasks in your list:", tasks);
+        return formatNumberedTasks("Flight plan, coming right up:", tasks);
     }
 
     /**
@@ -115,7 +117,7 @@ public class Ui {
      * @return Numbered matching-task list.
      */
     public String formatMatchingTasks(List<Task> matchingTasks) {
-        return formatNumberedTasks("Here are the matching tasks in your list:", matchingTasks);
+        return formatNumberedTasks("Scanner results—matching missions:", matchingTasks);
     }
 
     /**
@@ -143,9 +145,9 @@ public class Ui {
     public String formatTaskStatusUpdated(Task task, boolean isDone) {
         String heading;
         if (isDone) {
-            heading = "Nice! I've marked this task as done:";
+            heading = "Touchdown! Mission complete:";
         } else {
-            heading = "OK, I've marked this task as not done yet:";
+            heading = "Course corrected. Mission active again:";
         }
         return heading + "\n\t" + task;
     }
@@ -158,8 +160,7 @@ public class Ui {
      * @return Task-added confirmation.
      */
     public String formatTaskAdded(Task task, int taskCount) {
-        return "Got it. I've added this task:\n\t" + task
-                + "\nNow you have " + taskCount + " tasks in the list.";
+        return "Mission logged:\n\t" + task + "\n" + formatMissionCount(taskCount);
     }
 
     /**
@@ -170,8 +171,19 @@ public class Ui {
      * @return Task-deleted confirmation.
      */
     public String formatTaskDeleted(Task task, int taskCount) {
-        return "Noted. I've removed this task:\n\t" + task
-                + "\nNow you have " + taskCount + " tasks in the list.";
+        return "Mission scrubbed from the flight plan:\n\t" + task
+                + "\n" + formatMissionCount(taskCount);
+    }
+
+    /**
+     * Formats the number of missions on the flight plan with correct grammar.
+     *
+     * @param taskCount Number of tasks currently stored.
+     * @return Sentence describing the current flight-plan size.
+     */
+    private String formatMissionCount(int taskCount) {
+        String missionWord = taskCount == 1 ? "mission" : "missions";
+        return "Flight plan now holds " + taskCount + " " + missionWord + ".";
     }
 
     /**
@@ -196,6 +208,6 @@ public class Ui {
      * @return Jonk's farewell.
      */
     public String formatFarewell() {
-        return "Bye. Hope to see you again soon!";
+        return "Mission control signing off. Clear skies, explorer!";
     }
 }

@@ -52,7 +52,7 @@ public class MainWindow extends AnchorPane {
     }
 
     /**
-     * Displays the user's command and Jonk's response, then clears the input field.
+     * Displays the user's transmission and Jonk's response, then clears the input field.
      */
     @FXML
     private void handleUserInput() {

@@ -29,13 +29,13 @@ public final class Parser {
     public static int parseTaskNumber(String input) throws JonkException {
         String[] parts = splitCommand(input);
         if (parts.length != 2) {
-            throw new JonkException("Please provide exactly one task number.");
+            throw new JonkException("Mission control needs exactly one task number.");
         }
 
         try {
             return Integer.parseInt(parts[1]);
         } catch (NumberFormatException e) {
-            throw new JonkException("The task number must be a whole number.");
+            throw new JonkException("Task coordinates must be a whole number.");
         }
     }
 
@@ -49,7 +49,7 @@ public final class Parser {
     public static String parseKeyword(String input) throws JonkException {
         String[] parts = splitCommand(input);
         if (parts.length != 2 || parts[1].isBlank()) {
-            throw new JonkException("Please provide a keyword to find.");
+            throw new JonkException("Send a keyword for Jonk to scan.");
         }
         return parts[1].trim();
     }
@@ -74,7 +74,7 @@ public final class Parser {
             case "todo" -> parseTodo(details);
             case "deadline" -> parseDeadline(details);
             case "event" -> parseEvent(details);
-            default -> throw new JonkException("Sorry, I don't know what that means");
+            default -> throw unclearSignalException();
         };
     }
 
@@ -97,7 +97,7 @@ public final class Parser {
      */
     private static Task parseTodo(String[] details) throws JonkException {
         if (details[0].isBlank()) {
-            throw new JonkException("A todo must have a non-empty description.");
+            throw new JonkException("A todo mission needs a description.");
         }
         return new Todo(details[0]);
     }
@@ -111,13 +111,13 @@ public final class Parser {
      */
     private static Task parseDeadline(String[] details) throws JonkException {
         if (details.length != 2) {
-            throw new JonkException("A deadline must have a non-empty /by value.");
+            throw new JonkException("A deadline mission needs a non-empty /by date.");
         }
 
         String[] dueDateDetails = details[1].trim().split("\\s+", 2);
         if (dueDateDetails.length != 2 || !dueDateDetails[0].equals("/by")
                 || dueDateDetails[1].isBlank()) {
-            throw new JonkException("A deadline must have a non-empty /by value.");
+            throw new JonkException("A deadline mission needs a non-empty /by date.");
         }
 
         return new Deadline(details[0], dueDateDetails[1].trim());
@@ -132,7 +132,7 @@ public final class Parser {
      */
     private static Task parseEvent(String[] details) throws JonkException {
         if (details.length != 3) {
-            throw new JonkException("An event must have non-empty /from and /to values.");
+            throw new JonkException("An event mission needs non-empty /from and /to dates.");
         }
 
         String[] fromDetails = details[1].trim().split("\\s+", 2);
@@ -145,7 +145,7 @@ public final class Parser {
                 && !toDetails[1].isBlank();
 
         if (!hasValidFrom || !hasValidTo) {
-            throw new JonkException("An event must have non-empty /from and /to values.");
+            throw new JonkException("An event mission needs non-empty /from and /to dates.");
         }
 
         return new Event(details[0], fromDetails[1].trim(), toDetails[1].trim());
@@ -159,11 +159,20 @@ public final class Parser {
      */
     private static JonkException missingTaskDetailsException(String taskType) {
         return switch (taskType) {
-            case "todo" -> new JonkException("A todo must have a non-empty description.");
-            case "deadline" -> new JonkException("A deadline must have a non-empty /by value.");
+            case "todo" -> new JonkException("A todo mission needs a description.");
+            case "deadline" -> new JonkException("A deadline mission needs a non-empty /by date.");
             case "event" -> new JonkException(
-                    "An event must have non-empty /from and /to values.");
-            default -> new JonkException("Sorry, I don't know what that means");
+                    "An event mission needs non-empty /from and /to dates.");
+            default -> unclearSignalException();
         };
+    }
+
+    /**
+     * Creates the shared response for an unrecognized transmission.
+     *
+     * @return Error that directs the user to the mission guide.
+     */
+    private static JonkException unclearSignalException() {
+        return new JonkException("Signal unclear. Type help to open the mission guide.");
     }
 }

@@ -34,7 +34,7 @@ public class JonkTest {
         assertTrue(response.contains("yyyy-MM-dd"));
         assertTrue(response.contains("Use task numbers from list, starting at 1"));
         assertTrue(response.contains("Find matches are case-sensitive"));
-        assertEquals("Here are the tasks in your list:", jonk.getResponse("list"));
+        assertEquals("Flight plan, coming right up:", jonk.getResponse("list"));
         assertFalse(Files.exists(dataFile));
     }
 
@@ -49,7 +49,7 @@ public class JonkTest {
     public void getResponse_helpWithArguments_returnsUsageError() {
         Jonk jonk = new Jonk(tempDirectory.resolve("jonk.txt").toString());
 
-        assertEquals("The help command takes no arguments. Type help to see all commands.",
+        assertEquals("Extra signal detected. Type help on its own to open the mission guide.",
                 jonk.getResponse("help todo"));
     }
 
@@ -75,7 +75,7 @@ public class JonkTest {
         Files.writeString(dataFile, savedData);
         Jonk jonk = new Jonk(dataFile.toString());
 
-        assertTrue(jonk.getResponse("help").startsWith("Here's what you can do with Jonk:"));
+        assertTrue(jonk.getResponse("help").startsWith("Mission guide online. Here's what Jonk can do:"));
         assertEquals(savedData, Files.readString(dataFile));
     }
 
@@ -83,7 +83,9 @@ public class JonkTest {
     public void getWelcomeMessage_normalStartup_includesHelpHint() {
         Jonk jonk = new Jonk(tempDirectory.resolve("jonk.txt").toString());
 
-        assertEquals("Hello! I'm Jonk.\nWhat can I do for you?\nType help to see the available commands.",
+        assertEquals("Systems online! I'm Jonk, your mission-control copilot."
+                + "\nWhat shall we put on the flight plan?"
+                + "\nType help to see the available commands.",
                 jonk.getWelcomeMessage());
     }
 
@@ -95,24 +97,46 @@ public class JonkTest {
         String addResponse = jonk.getResponse("todo read book");
         String listResponse = jonk.getResponse("list");
 
-        assertEquals("Got it. I've added this task:\n\t[T][ ] read book"
-                + "\nNow you have 1 tasks in the list.", addResponse);
-        assertEquals("Here are the tasks in your list:\n\t1.[T][ ] read book", listResponse);
+        assertEquals("Mission logged:\n\t[T][ ] read book"
+                + "\nFlight plan now holds 1 mission.", addResponse);
+        assertEquals("Flight plan, coming right up:\n\t1.[T][ ] read book", listResponse);
         assertEquals("T | 0 | read book\n", Files.readString(dataFile));
+    }
+
+    @Test
+    public void getResponse_missionLifecycle_usesThemedResponsesAndPreservesTaskBehavior() throws IOException {
+        Path dataFile = tempDirectory.resolve("data/jonk.txt");
+        Jonk jonk = new Jonk(dataFile.toString());
+        jonk.getResponse("todo read book");
+
+        assertEquals("Mission logged:\n\t[T][ ] return book\nFlight plan now holds 2 missions.",
+                jonk.getResponse("todo return book"));
+        assertEquals("Touchdown! Mission complete:\n\t[T][X] read book", jonk.getResponse("mark 1"));
+        assertEquals("Course corrected. Mission active again:\n\t[T][ ] read book",
+                jonk.getResponse("unmark 1"));
+        assertEquals("Scanner results—matching missions:\n\t1.[T][ ] read book\n\t2.[T][ ] return book",
+                jonk.getResponse("find book"));
+        assertEquals("Mission scrubbed from the flight plan:\n\t[T][ ] read book"
+                + "\nFlight plan now holds 1 mission.",
+                jonk.getResponse("delete 1"));
+        assertEquals("Mission scrubbed from the flight plan:\n\t[T][ ] return book"
+                + "\nFlight plan now holds 0 missions.",
+                jonk.getResponse("delete 1"));
+        assertEquals("", Files.readString(dataFile));
     }
 
     @Test
     public void getResponse_invalidCommand_returnsErrorWithoutThrowing() {
         Jonk jonk = new Jonk(tempDirectory.resolve("jonk.txt").toString());
 
-        assertEquals("Sorry, I don't know what that means", jonk.getResponse("blah"));
+        assertEquals("Signal unclear. Type help to open the mission guide.", jonk.getResponse("blah"));
     }
 
     @Test
     public void getResponse_invalidDate_returnsFriendlyError() {
         Jonk jonk = new Jonk(tempDirectory.resolve("jonk.txt").toString());
 
-        assertEquals("Dates must be in yyyy-MM-dd format.",
+        assertEquals("Navigation dates must use yyyy-MM-dd format.",
                 jonk.getResponse("deadline invalid /by 2019-02-29"));
     }
 
@@ -120,7 +144,7 @@ public class JonkTest {
     public void getResponse_bye_returnsFarewell() {
         Jonk jonk = new Jonk(tempDirectory.resolve("jonk.txt").toString());
 
-        assertEquals("Bye. Hope to see you again soon!", jonk.getResponse("bye"));
+        assertEquals("Mission control signing off. Clear skies, explorer!", jonk.getResponse("bye"));
     }
 
     @Test
@@ -131,7 +155,7 @@ public class JonkTest {
 
         String welcomeMessage = jonk.getWelcomeMessage();
 
-        assertTrue(welcomeMessage.startsWith("Hello! I'm Jonk."));
+        assertTrue(welcomeMessage.startsWith("Systems online! I'm Jonk, your mission-control copilot."));
         assertTrue(welcomeMessage.contains("invalid data at line 1"));
     }
 }

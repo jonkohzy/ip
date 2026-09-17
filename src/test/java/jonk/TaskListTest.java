@@ -35,7 +35,7 @@ public class TaskListTest {
 
         JonkException exception = assertThrows(JonkException.class, () -> taskList.get(1));
 
-        assertEquals("That task number does not exist.", exception.getMessage());
+        assertEquals("That mission number is not on the flight plan.", exception.getMessage());
     }
 
     @Test
@@ -44,7 +44,7 @@ public class TaskListTest {
 
         JonkException exception = assertThrows(JonkException.class, () -> taskList.get(0));
 
-        assertEquals("That task number does not exist.", exception.getMessage());
+        assertEquals("That mission number is not on the flight plan.", exception.getMessage());
     }
 
     @Test
@@ -53,7 +53,7 @@ public class TaskListTest {
 
         JonkException exception = assertThrows(JonkException.class, () -> taskList.get(-1));
 
-        assertEquals("That task number does not exist.", exception.getMessage());
+        assertEquals("That mission number is not on the flight plan.", exception.getMessage());
     }
 
     @Test
@@ -62,7 +62,7 @@ public class TaskListTest {
 
         JonkException exception = assertThrows(JonkException.class, () -> taskList.get(2));
 
-        assertEquals("That task number does not exist.", exception.getMessage());
+        assertEquals("That mission number is not on the flight plan.", exception.getMessage());
     }
 
     @Test
@@ -123,7 +123,7 @@ public class TaskListTest {
 
         JonkException exception = assertThrows(JonkException.class, () -> taskList.delete(2));
 
-        assertEquals("That task number does not exist.", exception.getMessage());
+        assertEquals("That mission number is not on the flight plan.", exception.getMessage());
         assertEquals(List.of(onlyTask), taskList.asList());
     }
 

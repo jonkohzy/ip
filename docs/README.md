@@ -1,7 +1,12 @@
 # Jonk User Guide
 
-Jonk helps you keep track of todos, deadlines, and events. Enter commands in the chat field and press Enter or click
-Send. The same commands work in the command-line interface.
+Jonk is a warm, precise mission-control copilot that helps you keep track of todos, deadlines, and events. Enter
+commands in the transmission field and press Enter or click Transmit. The same commands work in the command-line
+interface.
+
+Jonk treats your tasks as missions and your task list as a flight plan. Expect encouraging confirmations such as
+`Mission logged:` and `Touchdown! Mission complete:`. The midnight-blue GUI pairs cyan Jonk messages and a star
+avatar with violet user messages and a rocket avatar. This theme does not change command syntax or saved tasks.
 
 ## Viewing help
 
@@ -11,7 +16,7 @@ You can open help at any time, including when your task list is empty. It does n
 The help page contains:
 
 ```text
-Here's what you can do with Jonk:
+Mission guide online. Here's what Jonk can do:
 help - Show this help page.
 list - Show all tasks and their task numbers.
 todo DESCRIPTION - Add a task without a date.
@@ -24,7 +29,7 @@ mark NUMBER - Mark a task as done. Example: mark 1
 unmark NUMBER - Mark a task as not done. Example: unmark 1
 delete NUMBER - Delete a task. Example: delete 1
 find KEYWORD - Find tasks containing the keyword. Example: find book
-bye - Exit Jonk.
+bye - Close mission control.
 
 Replace uppercase placeholders with your own values; do not type the placeholders.
 Dates use yyyy-MM-dd, for example 2026-09-15.
@@ -38,7 +43,7 @@ Help does not change your tasks.
 Use lowercase `help` without arguments. Surrounding whitespace is accepted. For example, `help todo` returns:
 
 ```text
-The help command takes no arguments. Type help to see all commands.
+Extra signal detected. Type help on its own to open the mission guide.
 ```
 
 To get started, enter `todo read book`, then `list`. Enter `mark 1` when you finish it.

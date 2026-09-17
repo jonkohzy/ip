@@ -43,7 +43,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTaskNumber("mark"));
 
-        assertEquals("Please provide exactly one task number.", exception.getMessage());
+        assertEquals("Mission control needs exactly one task number.", exception.getMessage());
     }
 
     @Test
@@ -51,7 +51,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTaskNumber("mark 1 now"));
 
-        assertEquals("The task number must be a whole number.", exception.getMessage());
+        assertEquals("Task coordinates must be a whole number.", exception.getMessage());
     }
 
     @Test
@@ -59,7 +59,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTaskNumber("mark 1.5"));
 
-        assertEquals("The task number must be a whole number.", exception.getMessage());
+        assertEquals("Task coordinates must be a whole number.", exception.getMessage());
     }
 
     @Test
@@ -67,7 +67,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTaskNumber("mark 2147483648"));
 
-        assertEquals("The task number must be a whole number.", exception.getMessage());
+        assertEquals("Task coordinates must be a whole number.", exception.getMessage());
     }
 
     @Test
@@ -85,7 +85,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseKeyword("find"));
 
-        assertEquals("Please provide a keyword to find.", exception.getMessage());
+        assertEquals("Send a keyword for Jonk to scan.", exception.getMessage());
     }
 
     @Test
@@ -119,7 +119,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTask("todo"));
 
-        assertEquals("A todo must have a non-empty description.", exception.getMessage());
+        assertEquals("A todo mission needs a description.", exception.getMessage());
     }
 
     @Test
@@ -127,7 +127,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTask("deadline return book /by"));
 
-        assertEquals("A deadline must have a non-empty /by value.", exception.getMessage());
+        assertEquals("A deadline mission needs a non-empty /by date.", exception.getMessage());
     }
 
     @Test
@@ -135,7 +135,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTask("deadline return book /before 2019-12-02"));
 
-        assertEquals("A deadline must have a non-empty /by value.", exception.getMessage());
+        assertEquals("A deadline mission needs a non-empty /by date.", exception.getMessage());
     }
 
     @Test
@@ -143,7 +143,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTask("event meeting /from 2019-12-03 /to"));
 
-        assertEquals("An event must have non-empty /from and /to values.",
+        assertEquals("An event mission needs non-empty /from and /to dates.",
                 exception.getMessage());
     }
 
@@ -153,7 +153,7 @@ public class ParserTest {
                 () -> Parser.parseTask(
                         "event meeting /to 2019-12-04 /from 2019-12-03"));
 
-        assertEquals("An event must have non-empty /from and /to values.",
+        assertEquals("An event mission needs non-empty /from and /to dates.",
                 exception.getMessage());
     }
 
@@ -162,7 +162,7 @@ public class ParserTest {
         JonkException exception = assertThrows(JonkException.class,
                 () -> Parser.parseTask("reminder call home"));
 
-        assertEquals("Sorry, I don't know what that means", exception.getMessage());
+        assertEquals("Signal unclear. Type help to open the mission guide.", exception.getMessage());
     }
 
     @Test

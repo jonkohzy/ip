@@ -16,12 +16,21 @@ import javafx.scene.layout.HBox;
  * Represents one message and an avatar identifying its speaker.
  */
 public class DialogBox extends HBox {
-    private static final String JONK_AVATAR = "🤖";
-    private static final String USER_AVATAR = "🙂";
+    private static final String JONK_AVATAR = "✦";
+    private static final String USER_AVATAR = "🚀";
     private static final String JONK_AVATAR_STYLE =
-            "-fx-background-color: #d7f4e3; -fx-background-radius: 28; -fx-font-size: 26;";
+            "-fx-background-color: #22d3ee; -fx-background-radius: 28;"
+            + " -fx-text-fill: #07111f; -fx-font-size: 30; -fx-font-weight: bold;";
     private static final String USER_AVATAR_STYLE =
-            "-fx-background-color: #dbeafe; -fx-background-radius: 28; -fx-font-size: 26;";
+            "-fx-background-color: #8b5cf6; -fx-background-radius: 28; -fx-font-size: 25;";
+    private static final String JONK_DIALOG_STYLE =
+            "-fx-background-color: #164e63; -fx-background-radius: 16 16 16 4;"
+            + " -fx-padding: 12; -fx-text-fill: #ecfeff;"
+            + " -fx-font-family: 'Avenir Next'; -fx-font-size: 13;";
+    private static final String USER_DIALOG_STYLE =
+            "-fx-background-color: #4c1d95; -fx-background-radius: 16 16 4 16;"
+            + " -fx-padding: 12; -fx-text-fill: #f5f3ff;"
+            + " -fx-font-family: 'Avenir Next'; -fx-font-size: 13;";
 
     @FXML
     private Label dialog;
@@ -29,7 +38,7 @@ public class DialogBox extends HBox {
     @FXML
     private Label avatar;
 
-    private DialogBox(String text, String avatarText, String avatarStyle) {
+    private DialogBox(String text, String avatarText, String avatarStyle, String dialogStyle) {
         FXMLLoader fxmlLoader = new FXMLLoader(MainWindow.class.getResource("/view/DialogBox.fxml"));
         fxmlLoader.setController(this);
         fxmlLoader.setRoot(this);
@@ -41,6 +50,7 @@ public class DialogBox extends HBox {
         }
 
         dialog.setText(text);
+        dialog.setStyle(dialogStyle);
         avatar.setText(avatarText);
         avatar.setStyle(avatarStyle);
     }
@@ -52,7 +62,7 @@ public class DialogBox extends HBox {
      * @return User dialog box.
      */
     public static DialogBox getUserDialog(String text) {
-        return new DialogBox(text, USER_AVATAR, USER_AVATAR_STYLE);
+        return new DialogBox(text, USER_AVATAR, USER_AVATAR_STYLE, USER_DIALOG_STYLE);
     }
 
     /**
@@ -62,7 +72,7 @@ public class DialogBox extends HBox {
      * @return Jonk dialog box.
      */
     public static DialogBox getJonkDialog(String text) {
-        DialogBox dialogBox = new DialogBox(text, JONK_AVATAR, JONK_AVATAR_STYLE);
+        DialogBox dialogBox = new DialogBox(text, JONK_AVATAR, JONK_AVATAR_STYLE, JONK_DIALOG_STYLE);
         dialogBox.flip();
         return dialogBox;
     }

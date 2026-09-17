@@ -98,7 +98,7 @@ public class Jonk {
         } catch (JonkException e) {
             return e.getMessage();
         } catch (DateTimeParseException e) {
-            return "Dates must be in yyyy-MM-dd format.";
+            return "Navigation dates must use yyyy-MM-dd format.";
         }
     }
 
@@ -114,13 +114,14 @@ public class Jonk {
         return switch (commandWord) {
             case "help" -> {
                 if (!input.trim().equals("help")) {
-                    throw new JonkException("The help command takes no arguments. Type help to see all commands.");
+                    throw new JonkException(
+                            "Extra signal detected. Type help on its own to open the mission guide.");
                 }
                 yield ui.formatHelp();
             }
             case "list" -> {
                 if (!input.equals("list")) {
-                    throw new JonkException("Sorry, I don't know what that means");
+                    throw unclearSignalException();
                 }
                 yield ui.formatTaskList(tasks.asList());
             }
@@ -129,8 +130,17 @@ public class Jonk {
             case "todo", "deadline", "event" -> addTask(input);
             case "delete" -> deleteTask(input);
             case "find" -> findTasks(input);
-            default -> throw new JonkException("Sorry, I don't know what that means");
+            default -> throw unclearSignalException();
         };
+    }
+
+    /**
+     * Creates the shared response for an unrecognized transmission.
+     *
+     * @return Error that directs the user to the mission guide.
+     */
+    private JonkException unclearSignalException() {
+        return new JonkException("Signal unclear. Type help to open the mission guide.");
     }
 
     /**

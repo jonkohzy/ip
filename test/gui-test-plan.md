@@ -19,8 +19,10 @@ E | 1 | project demo | 2019-10-16 | 2019-10-17
 
 **Inputs:** Launch the application.
 
-**Expected output:** A non-resizable window titled `Jonk` displays Jonk's greeting and `Type help to see the available commands.`, a command field, and a `Send`
-button.
+**Expected output:** A non-resizable window titled `Jonk • Mission Control` uses a midnight-blue control-deck theme
+with cyan and violet accents. It displays a `✦ JONK // MISSION CONTROL` header, Jonk's greeting and
+`Type help to see the available commands.`, a command field, and a `Transmit` button. Jonk uses a star avatar,
+the user uses a rocket avatar, and message text uses the Avenir Next font when it is available.
 
 ## GUI-02: Submit a command with Enter
 
@@ -33,12 +35,13 @@ tasks with their completion states and dates.
 
 ## GUI-03: Submit a command with the button
 
-**Aim:** Verify that the Send button processes a command and persistent task changes still work.
+**Aim:** Verify that the Transmit button processes a command and persistent task changes still work.
 
-**Inputs:** Type `todo GUI smoke test` and click `Send`.
+**Inputs:** Type `todo GUI smoke test` and click `Transmit`.
 
-**Expected output:** The conversation displays the user command and Jonk's task-added response with a total of four
-tasks. The data file ends with `T | 0 | GUI smoke test`.
+**Expected output:** The conversation displays the user command in a violet bubble and Jonk's mission-logged response
+in a cyan bubble, reporting that the flight plan holds four missions. The data file ends with
+`T | 0 | GUI smoke test`.
 
 ## GUI-HELP-01: Read the help page
 

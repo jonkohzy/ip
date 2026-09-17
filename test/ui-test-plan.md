@@ -35,7 +35,7 @@ help
 **Expected output:**
 
 ```text
-Here's what you can do with Jonk:
+Mission guide online. Here's what Jonk can do:
 help - Show this help page.
 list - Show all tasks and their task numbers.
 todo DESCRIPTION - Add a task without a date.
@@ -48,7 +48,7 @@ mark NUMBER - Mark a task as done. Example: mark 1
 unmark NUMBER - Mark a task as not done. Example: unmark 1
 delete NUMBER - Delete a task. Example: delete 1
 find KEYWORD - Find tasks containing the keyword. Example: find book
-bye - Exit Jonk.
+bye - Close mission control.
 
 Replace uppercase placeholders with your own values; do not type the placeholders.
 Dates use yyyy-MM-dd, for example 2026-09-15.
@@ -81,7 +81,7 @@ help todo
 **Expected output:**
 
 ```text
-The help command takes no arguments. Type help to see all commands.
+Extra signal detected. Type help on its own to open the mission guide.
 ```
 
 **Expected data file after command:**
@@ -106,7 +106,7 @@ list
 **Expected output:**
 
 ```text
-Here are the tasks in your list:
+Flight plan, coming right up:
     1.[T][X] write | report
     2.[D][ ] return notes \ room (by: Oct 15 2019)
     3.[E][X] project demo (from: Oct 16 2019 to: Oct 17 2019)
@@ -125,9 +125,9 @@ delete 3
 **Expected output:**
 
 ```text
-Noted. I've removed this task:
+Mission scrubbed from the flight plan:
     [E][X] project demo (from: Oct 16 2019 to: Oct 17 2019)
-Now you have 2 tasks in the list.
+Flight plan now holds 2 missions.
 ```
 
 **Expected data file after command:**
@@ -150,9 +150,9 @@ delete 2
 **Expected output:**
 
 ```text
-Noted. I've removed this task:
+Mission scrubbed from the flight plan:
     [D][ ] return notes \ room (by: Oct 15 2019)
-Now you have 1 tasks in the list.
+Flight plan now holds 1 mission.
 ```
 
 **Expected data file after command:**
@@ -174,9 +174,9 @@ delete 1
 **Expected output:**
 
 ```text
-Noted. I've removed this task:
+Mission scrubbed from the flight plan:
     [T][X] write | report
-Now you have 0 tasks in the list.
+Flight plan now holds 0 missions.
 ```
 
 **Expected data file after command:** The file is empty (zero bytes).
@@ -194,7 +194,7 @@ Now you have 0 tasks in the list.
 **Expected output:**
 
 ```text
-Here's what you can do with Jonk:
+Mission guide online. Here's what Jonk can do:
 help - Show this help page.
 list - Show all tasks and their task numbers.
 todo DESCRIPTION - Add a task without a date.
@@ -207,7 +207,7 @@ mark NUMBER - Mark a task as done. Example: mark 1
 unmark NUMBER - Mark a task as not done. Example: unmark 1
 delete NUMBER - Delete a task. Example: delete 1
 find KEYWORD - Find tasks containing the keyword. Example: find book
-bye - Exit Jonk.
+bye - Close mission control.
 
 Replace uppercase placeholders with your own values; do not type the placeholders.
 Dates use yyyy-MM-dd, for example 2026-09-15.
@@ -233,7 +233,7 @@ list
 **Expected output:**
 
 ```text
-Here are the tasks in your list:
+Flight plan, coming right up:
 ```
 
 ## UI-01: Add a todo
@@ -249,9 +249,9 @@ todo read book
 **Expected output:**
 
 ```text
-Got it. I've added this task:
+Mission logged:
     [T][ ] read book
-Now you have 1 tasks in the list.
+Flight plan now holds 1 mission.
 ```
 
 **Expected data file after command:**
@@ -273,9 +273,9 @@ deadline return book /by 2019-12-02
 **Expected output:**
 
 ```text
-Got it. I've added this task:
+Mission logged:
     [D][ ] return book (by: Dec 2 2019)
-Now you have 2 tasks in the list.
+Flight plan now holds 2 missions.
 ```
 
 **Expected data file after command:**
@@ -298,9 +298,9 @@ event project meeting /from 2019-12-03 /to 2019-12-04
 **Expected output:**
 
 ```text
-Got it. I've added this task:
+Mission logged:
     [E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
-Now you have 3 tasks in the list.
+Flight plan now holds 3 missions.
 ```
 
 **Expected data file after command:**
@@ -324,7 +324,7 @@ todo
 **Expected output:**
 
 ```text
-A todo must have a non-empty description.
+A todo mission needs a description.
 ```
 
 ## UI-05: Reject an empty deadline value
@@ -340,7 +340,7 @@ deadline return book /by
 **Expected output:**
 
 ```text
-A deadline must have a non-empty /by value.
+A deadline mission needs a non-empty /by date.
 ```
 
 ## UI-06: Reject an empty event value
@@ -356,7 +356,7 @@ event project meeting /from /to 2019-12-04
 **Expected output:**
 
 ```text
-An event must have non-empty /from and /to values.
+An event mission needs non-empty /from and /to dates.
 ```
 
 ## UI-DATE-01: Reject an impossible deadline date
@@ -372,7 +372,7 @@ deadline invalid date /by 2019-02-29
 **Expected output:**
 
 ```text
-Dates must be in yyyy-MM-dd format.
+Navigation dates must use yyyy-MM-dd format.
 ```
 
 ## UI-DATE-02: Reject an event date in the wrong format
@@ -388,7 +388,7 @@ event invalid date /from 2019/12/03 /to 2019-12-04
 **Expected output:**
 
 ```text
-Dates must be in yyyy-MM-dd format.
+Navigation dates must use yyyy-MM-dd format.
 ```
 
 ## UI-07: List tasks after invalid inputs
@@ -404,7 +404,7 @@ list
 **Expected output:**
 
 ```text
-Here are the tasks in your list:
+Flight plan, coming right up:
     1.[T][ ] read book
     2.[D][ ] return book (by: Dec 2 2019)
     3.[E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
@@ -424,7 +424,7 @@ find book
 **Expected output:**
 
 ```text
-Here are the matching tasks in your list:
+Scanner results—matching missions:
     1.[T][ ] read book
     2.[D][ ] return book (by: Dec 2 2019)
 ```
@@ -442,7 +442,7 @@ find library
 **Expected output:**
 
 ```text
-Here are the matching tasks in your list:
+Scanner results—matching missions:
 ```
 
 ## UI-FIND-CASE: Preserve case-sensitive search
@@ -458,7 +458,7 @@ find Book
 **Expected output:**
 
 ```text
-Here are the matching tasks in your list:
+Scanner results—matching missions:
 ```
 
 ## UI-FIND-03: Reject find without a keyword
@@ -474,7 +474,7 @@ find
 **Expected output:**
 
 ```text
-Please provide a keyword to find.
+Send a keyword for Jonk to scan.
 ```
 
 ## UI-08: Mark a task
@@ -490,7 +490,7 @@ mark 1
 **Expected output:**
 
 ```text
-Nice! I've marked this task as done:
+Touchdown! Mission complete:
     [T][X] read book
 ```
 
@@ -515,7 +515,7 @@ unmark 1
 **Expected output:**
 
 ```text
-OK, I've marked this task as not done yet:
+Course corrected. Mission active again:
     [T][ ] read book
 ```
 
@@ -540,7 +540,7 @@ blah
 **Expected output:**
 
 ```text
-Sorry, I don't know what that means
+Signal unclear. Type help to open the mission guide.
 ```
 
 ## UI-11: Reject blank input
@@ -556,7 +556,7 @@ Sorry, I don't know what that means
 **Expected output:**
 
 ```text
-Sorry, I don't know what that means
+Signal unclear. Type help to open the mission guide.
 ```
 
 ## UI-12: Reject mark without a task number
@@ -572,7 +572,7 @@ mark
 **Expected output:**
 
 ```text
-Please provide exactly one task number.
+Mission control needs exactly one task number.
 ```
 
 ## UI-13: Reject a non-numeric mark task number
@@ -588,7 +588,7 @@ mark abc
 **Expected output:**
 
 ```text
-The task number must be a whole number.
+Task coordinates must be a whole number.
 ```
 
 ## UI-14: Reject mark task number zero
@@ -604,7 +604,7 @@ mark 0
 **Expected output:**
 
 ```text
-That task number does not exist.
+That mission number is not on the flight plan.
 ```
 
 ## UI-15: Reject mark beyond the list size
@@ -620,7 +620,7 @@ mark 4
 **Expected output:**
 
 ```text
-That task number does not exist.
+That mission number is not on the flight plan.
 ```
 
 ## UI-16: Reject unmark without a task number
@@ -636,7 +636,7 @@ unmark
 **Expected output:**
 
 ```text
-Please provide exactly one task number.
+Mission control needs exactly one task number.
 ```
 
 ## UI-17: Reject a non-numeric unmark task number
@@ -652,7 +652,7 @@ unmark abc
 **Expected output:**
 
 ```text
-The task number must be a whole number.
+Task coordinates must be a whole number.
 ```
 
 ## UI-18: Reject unmark task number zero
@@ -668,7 +668,7 @@ unmark 0
 **Expected output:**
 
 ```text
-That task number does not exist.
+That mission number is not on the flight plan.
 ```
 
 ## UI-19: Reject unmark beyond the list size
@@ -684,7 +684,7 @@ unmark 4
 **Expected output:**
 
 ```text
-That task number does not exist.
+That mission number is not on the flight plan.
 ```
 
 ## UI-20: Mark the last task
@@ -700,7 +700,7 @@ mark 3
 **Expected output:**
 
 ```text
-Nice! I've marked this task as done:
+Touchdown! Mission complete:
     [E][X] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
@@ -725,7 +725,7 @@ unmark 3
 **Expected output:**
 
 ```text
-OK, I've marked this task as not done yet:
+Course corrected. Mission active again:
     [E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
 
@@ -750,9 +750,9 @@ delete 2
 **Expected output:**
 
 ```text
-Noted. I've removed this task:
+Mission scrubbed from the flight plan:
     [D][ ] return book (by: Dec 2 2019)
-Now you have 2 tasks in the list.
+Flight plan now holds 2 missions.
 ```
 
 **Expected data file after command:**
@@ -775,7 +775,7 @@ list
 **Expected output:**
 
 ```text
-Here are the tasks in your list:
+Flight plan, coming right up:
     1.[T][ ] read book
     2.[E][ ] project meeting (from: Dec 3 2019 to: Dec 4 2019)
 ```
@@ -793,7 +793,7 @@ delete
 **Expected output:**
 
 ```text
-Please provide exactly one task number.
+Mission control needs exactly one task number.
 ```
 
 ## UI-25: Reject a non-numeric delete task number
@@ -809,7 +809,7 @@ delete abc
 **Expected output:**
 
 ```text
-The task number must be a whole number.
+Task coordinates must be a whole number.
 ```
 
 ## UI-26: Reject delete task number zero
@@ -825,7 +825,7 @@ delete 0
 **Expected output:**
 
 ```text
-That task number does not exist.
+That mission number is not on the flight plan.
 ```
 
 ## UI-27: Reject delete beyond the list size
@@ -841,7 +841,7 @@ delete 3
 **Expected output:**
 
 ```text
-That task number does not exist.
+That mission number is not on the flight plan.
 ```
 
 ## UI-28: Exit the program
@@ -857,5 +857,5 @@ bye
 **Expected output:**
 
 ```text
-    Bye. Hope to see you again soon!
+    Mission control signing off. Clear skies, explorer!
 ```

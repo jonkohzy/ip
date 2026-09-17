@@ -116,7 +116,7 @@ public class TaskList {
      */
     private int toIndex(int taskNumber) throws JonkException {
         if (taskNumber < 1 || taskNumber > tasks.size()) {
-            throw new JonkException("That task number does not exist.");
+            throw new JonkException("That mission number is not on the flight plan.");
         }
         return taskNumber - 1;
     }

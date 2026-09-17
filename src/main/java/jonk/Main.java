@@ -21,7 +21,7 @@ public class Main extends Application {
         Scene scene = new Scene(mainLayout);
 
         stage.setScene(scene);
-        stage.setTitle("Jonk");
+        stage.setTitle("Jonk • Mission Control");
         stage.setResizable(false);
         fxmlLoader.<MainWindow>getController().setJonk(jonk);
         stage.show();
