@@ -7,11 +7,77 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.time.format.DateTimeParseException;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests command parsing and validation performed by {@link Parser}.
  */
 public class ParserTest {
+
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', value = {
+            "deadline | A deadline mission needs a non-empty /by date.",
+            "event | An event mission needs non-empty /from and /to dates.",
+            "unknown | Signal unclear. Type help to open the mission guide.",
+            "'' | Signal unclear. Type help to open the mission guide."
+    })
+    public void parseTask_missingDetails_returnsSpecificError(String command, String expected) {
+        assertEquals(expected, assertThrows(JonkException.class, () -> Parser.parseTask(command)).getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "deadline book", "deadline book /by 2026-01-01 /by 2026-01-02", "deadline book /by   "
+    })
+    public void parseTask_missingOrRepeatedDeadlineMarker_rejectsTask(String command) {
+        assertEquals("A deadline mission needs a non-empty /by date.",
+                assertThrows(JonkException.class, () -> Parser.parseTask(command)).getMessage());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {
+            "event meeting", "event meeting /from 2026-01-01",
+            "event meeting /from /to 2026-01-02", "event meeting /from 2026-01-01 /to",
+            "event meeting /start 2026-01-01 /to 2026-01-02",
+            "event meeting /from 2026-01-01 /end 2026-01-02",
+            "event meeting /from 2026-01-01 /to 2026-01-02 /to 2026-01-03"
+    })
+    public void parseTask_malformedEventMarkers_rejectsTask(String command) {
+        assertEquals("An event mission needs non-empty /from and /to dates.",
+                assertThrows(JonkException.class, () -> Parser.parseTask(command)).getMessage());
+    }
+
+    @ParameterizedTest
+    @CsvSource(delimiter = '|', value = {
+            "'  todo\t read two books  ' | T",
+            "' deadline\t return book\t/by\t2024-02-29 ' | D",
+            "' event  team meeting  /from  2024-02-29  /to  2024-03-01 ' | E"
+    })
+    public void parseTask_extraWhitespace_preservesDescriptionAndParsesTask(String command, String type)
+            throws JonkException {
+        Task task = Parser.parseTask(command);
+
+        String expectedDescription = switch (type) {
+            case "T" -> "read two books";
+            case "D" -> "return book";
+            default -> "team meeting";
+        };
+        assertEquals(expectedDescription, task.getDescription());
+        assertEquals(type, task.toFileString().substring(0, 1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {Integer.MIN_VALUE, -1, 0, 1, Integer.MAX_VALUE})
+    public void parseTaskNumber_integerBoundaries_leavesRangeValidationToTaskList(int number) throws JonkException {
+        assertEquals(number, Parser.parseTaskNumber("mark " + number));
+    }
+
+    @Test
+    public void parseKeyword_tabsAndSurroundingWhitespace_preservesInnerSpaces() throws JonkException {
+        assertEquals("read  book", Parser.parseKeyword(" \tfind\t read  book \t"));
+    }
 
     @Test
     public void parseCommandWord_commandWithArguments_returnsCommandWord() {

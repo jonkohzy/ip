@@ -3,6 +3,11 @@
 Jonk is a mission-control-themed task chatbot built from a greenfield Java project template. It is named after the
 Java mascot _Duke_. Given below are instructions on how to use it.
 
+## Testing
+
+With Java 25 selected, run `./gradlew clean check` for the full JUnit suite and coverage checks.
+See [the testing guide](test/README.md) for reports, coverage scope, and console/GUI test plans.
+
 ## Setting up in Intellij
 
 Prerequisites: JDK 25, update Intellij to the most recent version.

@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'jacoco'
     id 'com.gradleup.shadow' version '9.5.1'
 }
 
@@ -34,6 +35,7 @@ dependencies {
     implementation("org.openjfx:javafx-graphics:${javaFxVersion}:linux")
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
+    testImplementation "org.junit.jupiter:junit-jupiter-params:${jUnitVersion}"
 
     testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:${jUnitVersion}"
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher:1.14.4'
@@ -41,6 +43,10 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    // Keep English display expectations stable on machines with another default locale.
+    systemProperty 'user.language', 'en'
+    systemProperty 'user.country', 'US'
+    finalizedBy jacocoTestReport
 
     testLogging {
         events 'passed', 'skipped', 'failed'
@@ -52,6 +58,41 @@ test {
         showStandardStreams = false
     }
 }
+
+jacoco {
+    toolVersion = '0.8.14' // Supports Java 25 bytecode.
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        html.required = true
+        xml.required = true
+    }
+    // JavaFX presentation and launch wiring are covered by the manual GUI test plan.
+    classDirectories.setFrom(sourceSets.main.output.asFileTree.matching {
+        exclude 'jonk/Main.class', 'jonk/MainWindow.class', 'jonk/DialogBox.class', 'jonk/Launcher.class'
+    })
+}
+
+jacocoTestCoverageVerification {
+    dependsOn test
+    classDirectories.setFrom(jacocoTestReport.classDirectories)
+    violationRules {
+        rule {
+            limit {
+                counter = 'LINE'
+                minimum = 0.95
+            }
+            limit {
+                counter = 'BRANCH'
+                minimum = 0.90
+            }
+        }
+    }
+}
+
+check.dependsOn jacocoTestCoverageVerification
 
 application {
     mainClass.set("jonk.Launcher")

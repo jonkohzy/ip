@@ -4,14 +4,91 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * Tests task lookup, deletion, and rollback operations in {@link TaskList}.
  */
 public class TaskListTest {
+
+    @Test
+    public void constructor_sourceListChanges_keepsIndependentTaskOrder() {
+        Task originalTask = new Todo("original");
+        List<Task> source = new ArrayList<>(List.of(originalTask));
+        TaskList tasks = new TaskList(source);
+
+        source.clear();
+        tasks.add(new Todo("added"));
+
+        assertEquals(2, tasks.size());
+        assertSame(originalTask, tasks.asList().getFirst());
+        assertEquals(List.of(), source);
+    }
+
+    @Test
+    public void asList_listChanges_keepsUnmodifiableSnapshot() throws JonkException {
+        Task originalTask = new Todo("original");
+        TaskList tasks = new TaskList(List.of(originalTask));
+        List<Task> snapshot = tasks.asList();
+
+        assertThrows(UnsupportedOperationException.class, snapshot::clear);
+        tasks.delete(1);
+        tasks.add(new Todo("replacement"));
+
+        assertEquals(List.of(originalTask), snapshot);
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 3})
+    public void deleteAndRestore_boundaryPosition_preservesOrder(int number) throws JonkException {
+        List<Task> original = List.of(new Todo("first"), new Todo("middle"), new Todo("last"));
+        TaskList tasks = new TaskList(original);
+        Task removed = tasks.delete(number);
+
+        assertSame(original.get(number - 1), removed);
+        assertEquals(2, tasks.size());
+        tasks.restore(number, removed);
+
+        assertEquals(original, tasks.asList());
+    }
+
+    @Test
+    public void restore_onlyDeletedTask_restoresEmptyList() throws JonkException {
+        Task original = new Todo("only");
+        TaskList tasks = new TaskList(List.of(original));
+        tasks.delete(1);
+
+        tasks.restore(1, original);
+
+        assertEquals(List.of(original), tasks.asList());
+    }
+
+    @Test
+    public void restore_nullTaskOrZeroPosition_rejectsWithoutChangingList() {
+        Task original = new Todo("only");
+        TaskList tasks = new TaskList(List.of(original));
+
+        assertThrows(AssertionError.class, () -> tasks.restore(1, null));
+        assertThrows(AssertionError.class, () -> tasks.restore(0, original));
+        assertEquals(List.of(original), tasks.asList());
+    }
+
+    @Test
+    public void find_dateOrStatusText_doesNotMatchOutsideDescription() {
+        Task task = new Deadline("return book", "2026-09-17");
+        task.markAsDone();
+        TaskList tasks = new TaskList(List.of(task));
+
+        assertEquals(List.of(), tasks.find("2026"));
+        assertEquals(List.of(), tasks.find("[X]"));
+        assertEquals(List.of(task), tasks.find("turn bo"));
+        assertEquals(List.of(), new TaskList().find("book"));
+    }
 
     @Test
     public void get_firstTaskNumber_returnsFirstTask() throws JonkException {

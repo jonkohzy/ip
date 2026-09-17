@@ -844,6 +844,149 @@ delete 3
 That mission number is not on the flight plan.
 ```
 
+## UI-MORE-01: Reject an overflowing task number
+
+**Aim:** Verify that a number larger than Java's integer range produces a friendly error.
+
+**Inputs:**
+
+```text
+mark 2147483648
+```
+
+**Expected output:**
+
+```text
+Task coordinates must be a whole number.
+```
+
+## UI-MORE-02: Reject extra list arguments
+
+**Aim:** Verify that list does not silently accept unsupported arguments.
+
+**Inputs:**
+
+```text
+list extra
+```
+
+**Expected output:**
+
+```text
+Signal unclear. Type help to open the mission guide.
+```
+
+## UI-MORE-03: Add Unicode and escaped characters with extra command whitespace
+
+**Aim:** Verify that leading and repeated command spaces are accepted and Unicode, pipes, and backslashes
+are preserved in the task description and correctly escaped in storage.
+
+**Inputs:**
+
+```text
+  todo   复习 🚀 | notes \ draft
+```
+
+**Expected output:**
+
+```text
+Mission logged:
+    [T][ ] 复习 🚀 | notes \ draft
+Flight plan now holds 3 missions.
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
+T | 0 | 复习 🚀 \| notes \\ draft
+```
+
+## UI-MORE-04: Find a Unicode phrase
+
+**Aim:** Verify that a multiword Unicode keyword matches the description and numbers the result from one.
+
+**Inputs:**
+
+```text
+find 复习 🚀
+```
+
+**Expected output:**
+
+```text
+Scanner results—matching missions:
+    1.[T][ ] 复习 🚀 | notes \ draft
+```
+
+## UI-MORE-05: Mark the Unicode task
+
+**Aim:** Verify that the task number from list can mark the new third task.
+
+**Inputs:**
+
+```text
+mark 3
+```
+
+**Expected output:**
+
+```text
+Touchdown! Mission complete:
+    [T][X] 复习 🚀 | notes \ draft
+```
+
+## UI-MORE-06: Mark an already completed task
+
+**Aim:** Verify that repeating mark keeps the task completed without adding or changing other tasks.
+
+**Inputs:**
+
+```text
+mark 3
+```
+
+**Expected output:**
+
+```text
+Touchdown! Mission complete:
+    [T][X] 复习 🚀 | notes \ draft
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
+T | 1 | 复习 🚀 \| notes \\ draft
+```
+
+## UI-MORE-07: Delete the Unicode task
+
+**Aim:** Verify that deletion preserves the two earlier tasks and their order.
+
+**Inputs:**
+
+```text
+delete 3
+```
+
+**Expected output:**
+
+```text
+Mission scrubbed from the flight plan:
+    [T][X] 复习 🚀 | notes \ draft
+Flight plan now holds 2 missions.
+```
+
+**Expected data file after command:**
+
+```text
+T | 0 | read book
+E | 0 | project meeting | 2019-12-03 | 2019-12-04
+```
+
 ## UI-28: Exit the program
 
 **Aim:** Verify that the program exits with its farewell message.
